@@ -92,12 +92,12 @@ This command will:
 - Create all the necessary tables in your database
 - Set up the schema based on your `prisma/schema.prisma` file
 
-### Step 4: Seed the Database (Optional)
+### Step 4: Seed the Database
 
 To populate your database with initial data including default themes and permissions:
 
 ```bash
-npm run seed
+node prisma/seed.js
 ```
 
 This will create:
