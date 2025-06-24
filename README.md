@@ -4,8 +4,7 @@ This guide will walk you through setting up the database for your Leaderboard ap
 
 ## Prerequisites
 
-- Node.js installed on your local machine
-- Git repository cloned
+- Node.js installed on your local machine or whereever you plan to host it.
 - Synth Hosting account
 
 ## 1. Database Hosting Setup
@@ -14,9 +13,8 @@ This guide will walk you through setting up the database for your Leaderboard ap
 
 1. Visit [Synth Hosting Bot Hosting](https://synthhosting.com/bots)
 2. Select a suitable hosting plan for your bot
-3. Tip: make sure you use code 4BOTSFREE - this give you a free bot :D
-4. Click **Deploy** to create your hosting instance
-5. Wait for the deployment to complete
+3. Click **Deploy** to create your hosting instance
+4. Wait for the deployment to complete
 
 ### Step 2: Access Your Bot Panel
 
@@ -122,39 +120,23 @@ This will create:
    ```
    
 3. **In Prisma Studio:**
-   - Navigate to the `User` table
+   - Navigate to the `Admins` table
    - Click **Add record**
    - Fill in the following fields:
      - `steamId`: Your SteamID64
-     - `name`: Your display name
-     - `image`: Your Steam avatar URL (optional)
+     - `displayName`: Your display name
+     - `ownerId`: Your SteamID64 (same as steamId for owner access)
    - Click **Save**
 
 4. **Add admin permissions:**
-   - Navigate to the `UserPermission` table
+   - First, check the `Permissions` table to find the ID of the `owner_access` permission
+   - Navigate to the `AdminPermissions` table
    - Click **Add record**
-   - Set `userId` to the ID of the user you just created
-   - Set `permission` to `super_admin`
+   - Set `adminSteamId` to your SteamID64
+   - Set `permissionId` to the ID number of the `owner_access` permission (usually 7 if using default seed data)
    - Click **Save**
 
-### Method 2: Direct SQL (Advanced Users)
-
-If you prefer using SQL directly:
-
-```sql
--- Insert user (replace with your actual Steam ID and details)
-INSERT INTO User (steamId, name, image) 
-VALUES ('76561198000000000', 'Your Name', 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/your_avatar.jpg');
-
--- Get the user ID (note the ID from the previous insert)
--- Replace 'USER_ID_HERE' with the actual ID returned
-
--- Grant super admin permissions
-INSERT INTO UserPermission (userId, permission) 
-VALUES (USER_ID_HERE, 'super_admin');
-```
-
-### Method 3: Using the Application
+### Method 2: Using the Application
 
 1. **Start your application:**
    ```bash
@@ -167,8 +149,9 @@ VALUES (USER_ID_HERE, 'super_admin');
    - Complete the Steam authentication
 
 3. **Manually grant permissions:**
-   - Use Prisma Studio or direct SQL to add the `super_admin` permission to your user
-   - Your user record will be automatically created during the Steam login process
+   - After logging in, your admin record will NOT be automatically created
+   - You must manually add yourself to the `Admins` table using Prisma Studio
+   - Then add the `owner_access` permission in the `AdminPermissions` table
 
 ## 5. Verification
 
@@ -187,12 +170,13 @@ npx prisma studio
 ```
 
 You should see all the required tables:
-- `User`
-- `UserPermission`
-- `Server`
-- `WipeSchedule`
+- `Admins`
+- `AdminPermissions`
+- `Permissions`
+- `Servers`
+- `WipeSchedules`
 - `ThemeSettings`
-- `PlayerStats`
+- `Stats`
 
 ### Test Admin Access
 
@@ -205,12 +189,17 @@ You should see all the required tables:
 
 Your application supports the following permission levels:
 
-- `super_admin` - Full access to all features
-- `manage_players` - Can manage player statistics and data
-- `manage_servers` - Can manage server configurations
-- `manage_wipes` - Can manage wipe schedules and execute wipes
-- `manage_themes` - Can manage theme settings and customization
-- `view_stats` - Can view statistics and reports
+- `owner_access` - Full owner access to all features and settings
+- `view_stats` - View player statistics and leaderboard data  
+- `manage_admins` - Add, edit, and remove admin users
+- `manage_permissions` - Assign and revoke admin permissions
+- `view_admin_panel` - Access the admin panel interface
+- `edit_player_stats` - Modify player statistics and records
+- `delete_player_stats` - Delete player statistics and records
+- `server_management` - Manage server configurations and settings
+- `manage_themes` - Create, edit, and manage theme settings
+
+**Note:** The `owner_access` permission grants access to all features. For granular control, use the specific permissions listed above.
 
 ## 7. Troubleshooting
 
@@ -222,8 +211,8 @@ Your application supports the following permission levels:
 - Check that your Synth Hosting database is running
 
 **Permission Denied:**
-- Make sure your user has the correct Steam ID
-- Verify the user has the appropriate permissions in the `UserPermission` table
+- Make sure your admin has the correct Steam ID in the `Admins` table
+- Verify the admin has the appropriate permissions in the `AdminPermissions` table
 
 **Schema Issues:**
 - Run `npx prisma db push` to sync your schema
