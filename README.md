@@ -11,7 +11,7 @@ This guide will walk you through setting up the database for your Leaderboard ap
 
 ### Step 1: Create Bot Hosting Instance
 
-1. Visit [Synth Hosting Bot Hosting](https://synthhosting.com/bots)
+1. Visit [Synth Hosting Bot Hosting](https://synthhosting.com/bots) <- no longer up any MySQL database will work.
 2. Select a suitable hosting plan for your bot
 3. Click **Deploy** to create your hosting instance
 4. Wait for the deployment to complete
