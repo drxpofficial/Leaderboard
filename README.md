@@ -43,7 +43,7 @@ This guide will walk you through setting up the database for your Leaderboard ap
 
 ### Step 1: Set Database URL
 
-1. In your project root directory, create or edit your `.env.local` file
+1. In your project root directory, create or edit your `.env` file
 2. Add the database URL:
 
 ```env
@@ -54,7 +54,7 @@ Replace the connection string with your actual modified JDBC string from Synth H
 
 ### Step 2: Verify Environment Variables
 
-Ensure your `.env.local` file also contains other required variables:
+Ensure your `.env` file also contains other required variables:
 
 ```env
 # Database
